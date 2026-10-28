@@ -15,7 +15,7 @@ export default function StrategySandbox() {
     setLoading(true);
     setError(null);
     try {
-      const apiBase = window.location.port === '5173' ? 'http://127.0.0.1:8000' : '';
+      const apiBase = window.location.port === '8000' ? '' : 'http://127.0.0.1:8000';
       const res = await fetch(
         `${apiBase}/api/strategy/sandbox?priority_rule=${priorityRule}&contact_capacity=${capacity}&min_dpd=${minDpd}&max_dpd=${maxDpd}`
       );

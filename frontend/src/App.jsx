@@ -18,7 +18,7 @@ import StrategySandbox from './components/StrategySandbox';
 import Methodology from './components/Methodology';
 import EvidenceTraceModal from './components/EvidenceTraceModal';
 
-const API_BASE = window.location.port === '5173' ? 'http://127.0.0.1:8000' : '';
+const API_BASE = window.location.port === '8000' ? '' : 'http://127.0.0.1:8000';
 
 export default function App() {
   const [activeTab, setActiveTab] = useState('executive');

@@ -102,8 +102,14 @@ python scripts/pipeline.py
 python -m pytest tests/ -v
 ```
 
-### Step 4: Launch the Full-Stack Dashboard
-Run the single command below to start the unified FastAPI server hosting both the REST API and the React executive dashboard:
+### Step 4: Launch the Full-Stack Dashboard (One-Click)
+Run the one-command launcher to verify databases, launch the server, and automatically open the executive dashboard in your browser:
+```powershell
+python run.py
+```
+*(On Windows, you can also simply double-click `run.bat`)*
+
+Alternatively, you can run Uvicorn directly:
 ```powershell
 python -m uvicorn backend.main:app --host 127.0.0.1 --port 8000
 ```
