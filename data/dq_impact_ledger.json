@@ -1,0 +1,112 @@
+[
+  {
+    "issue_id":"DQ-ACC-01",
+    "category":"Missing Foreign Key",
+    "table_name":"accounts",
+    "affected_rows":455,
+    "monetary_impact":153856520.5099999905,
+    "changes_headline":false,
+    "treatment":"Preserved with flag `has_missing_borrower = True`; not dropped to prevent balance undercounting.",
+    "rationale":"Accounts without borrower references still possess real financial obligations.",
+    "limitation":"Borrower demographics cannot be joined for these accounts."
+  },
+  {
+    "issue_id":"DQ-BOR-01",
+    "category":"Entity Duplication",
+    "table_name":"borrowers",
+    "affected_rows":19585,
+    "monetary_impact":0.0,
+    "changes_headline":false,
+    "treatment":"Deduplicated by `borrower_id` keeping most recently updated record.",
+    "rationale":"Multiple borrower snapshots represent operational audit logs rather than distinct humans.",
+    "limitation":"May discard historical contact information changes."
+  },
+  {
+    "issue_id":"DQ-ACC-02",
+    "category":"Orphan Foreign Key",
+    "table_name":"accounts",
+    "affected_rows":2458,
+    "monetary_impact":852728436.8799999952,
+    "changes_headline":false,
+    "treatment":"Flagged with `is_orphan_borrower = True` in golden_accounts.",
+    "rationale":"Referential integrity failure from uncoordinated table generation\/sharding.",
+    "limitation":"Cannot attribute geographic performance for orphan accounts."
+  },
+  {
+    "issue_id":"DQ-PAY-01",
+    "category":"Exact Duplicate Rows",
+    "table_name":"payments",
+    "affected_rows":486,
+    "monetary_impact":37299019.799999997,
+    "changes_headline":true,
+    "treatment":"Exact duplicates dropped completely from golden analytical tables.",
+    "rationale":"Identical rows represent duplicate ingestion\/webhook redeliveries.",
+    "limitation":"Reduces raw transaction count by exactly 486 rows."
+  },
+  {
+    "issue_id":"DQ-PAY-02",
+    "category":"Primary Key Collision",
+    "table_name":"payments",
+    "affected_rows":28,
+    "monetary_impact":2134648.9199999999,
+    "changes_headline":true,
+    "treatment":"Deduplicated by `payment_id` prioritizing SUCCESS status then earliest event_at.",
+    "rationale":"Primary key `payment_id` must uniquely identify an analytical payment event.",
+    "limitation":"If two legitimate transactions shared an ID by collision, only one is counted."
+  },
+  {
+    "issue_id":"DQ-PAY-03",
+    "category":"Missing Transaction Reference",
+    "table_name":"payments",
+    "affected_rows":382,
+    "monetary_impact":28756788.5799999982,
+    "changes_headline":false,
+    "treatment":"Imputed synthetic reference `SYNTH_REF_<payment_id>` and flagged `imputed_reference = True`.",
+    "rationale":"Legacy cash or manual collections lack gateway references but represent valid collected cash.",
+    "limitation":"Cannot reconcile against gateway settlement logs."
+  },
+  {
+    "issue_id":"DQ-PAY-04",
+    "category":"Non-Settled Payment Inclusion",
+    "table_name":"payments",
+    "affected_rows":7620,
+    "monetary_impact":575772690.8199999332,
+    "changes_headline":true,
+    "treatment":"Filtered out of primary recovery KPI; preserved in golden_payments with `is_settled = False`.",
+    "rationale":"Pending and reversed transactions do not represent collected capital.",
+    "limitation":"Pending transactions that subsequently clear are excluded from point-in-time calculation."
+  },
+  {
+    "issue_id":"DQ-DSP-01",
+    "category":"Schema & Code Fragmentation",
+    "table_name":"call_dispositions",
+    "affected_rows":14334,
+    "monetary_impact":0.0,
+    "changes_headline":false,
+    "treatment":"Standardized legacy code `PTP` to canonical `PROMISE_TO_PAY`.",
+    "rationale":"Fragmented disposition codes split identical agent promise outcomes.",
+    "limitation":"Historical nuance in legacy disposition scripts is unified."
+  },
+  {
+    "issue_id":"DQ-ASH-01",
+    "category":"Temporal Inconsistency",
+    "table_name":"account_status_history",
+    "affected_rows":30191,
+    "monetary_impact":0.0,
+    "changes_headline":false,
+    "treatment":"Flagged `has_inverted_timestamp = True`; chronological sorting uses `dt_event` as ground truth.",
+    "rationale":"Client-device clock drift and asynchronous ingestion queues produce record_at < event_at.",
+    "limitation":"Audit logging cannot prove sequence of state changes occurring within clock drift margin."
+  },
+  {
+    "issue_id":"DQ-AGT-01",
+    "category":"Table Snapshot Duplication",
+    "table_name":"agents",
+    "affected_rows":29000,
+    "monetary_impact":0.0,
+    "changes_headline":false,
+    "treatment":"Deduplicated to unique `agent_id` taking latest record.",
+    "rationale":"Agents table represented an append-only log without unique constraints.",
+    "limitation":"Historical agent team transfers are flattened to current team."
+  }
+]

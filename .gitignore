@@ -1,0 +1,26 @@
+# Python Bytecode & Cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+.venv/
+.pytest_cache/
+
+# Node & Package Managers
+frontend/node_modules/
+frontend/.vite/
+.npm
+package-lock.json.log
+!frontend/dist/
+
+# Temporary files & DB locks
+*.tmp
+*.log
+*.duckdb.wal
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
