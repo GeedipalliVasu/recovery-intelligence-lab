@@ -3,8 +3,10 @@ Recovery Intelligence Lab - Executive KPI & Verdict Engine
 """
 
 from typing import Dict, Any, List
+from functools import lru_cache
 from backend.database import get_db_connection
 
+@lru_cache(maxsize=1)
 def get_executive_summary() -> Dict[str, Any]:
     con = get_db_connection()
     

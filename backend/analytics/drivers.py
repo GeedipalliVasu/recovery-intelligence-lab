@@ -3,8 +3,10 @@ Recovery Intelligence Lab - Performance Drivers & Segmentation Engine
 """
 
 from typing import Dict, Any, List
+from functools import lru_cache
 from backend.database import get_db_connection
 
+@lru_cache(maxsize=1)
 def get_performance_drivers() -> Dict[str, Any]:
     con = get_db_connection()
     

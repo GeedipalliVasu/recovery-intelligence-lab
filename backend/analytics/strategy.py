@@ -3,8 +3,10 @@ Recovery Intelligence Lab - Collection Strategy Sandbox & Causal Experiment Desi
 """
 
 from typing import Dict, Any, List
+from functools import lru_cache
 from backend.database import get_db_connection
 
+@lru_cache(maxsize=128)
 def simulate_strategy(
     priority_rule: str = "HIGH_BALANCE_EARLY_DPD",
     contact_capacity: int = 10000,

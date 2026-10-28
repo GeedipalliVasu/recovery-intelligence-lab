@@ -28,6 +28,18 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+@app.on_event("startup")
+def startup_event():
+    # Pre-warm analytical caches on startup for instant sub-millisecond responses
+    try:
+        get_executive_summary()
+        get_claim_stress_test_scenarios()
+        get_performance_drivers()
+        get_cached_dq_ledger()
+        simulate_strategy()
+    except Exception as e:
+        print(f"Startup cache initialization note: {e}")
+
 @app.get("/api/health")
 def health_check():
     try:
@@ -59,17 +71,23 @@ def evidence_trace(metric: str = Query("claim_11_pct", description="Metric ident
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
+from functools import lru_cache
+
+@lru_cache(maxsize=1)
+def get_cached_dq_ledger():
+    con = get_db_connection()
+    ledger_df = con.execute("SELECT * FROM dq_impact_ledger ORDER BY monetary_impact DESC").df()
+    con.close()
+    return {
+        "total_issues": len(ledger_df),
+        "total_financial_impact": float(ledger_df['monetary_impact'].sum()),
+        "issues": ledger_df.to_dict(orient="records")
+    }
+
 @app.get("/api/data-quality/ledger")
 def data_quality_ledger():
     try:
-        con = get_db_connection()
-        ledger_df = con.execute("SELECT * FROM dq_impact_ledger ORDER BY monetary_impact DESC").df()
-        con.close()
-        return {
-            "total_issues": len(ledger_df),
-            "total_financial_impact": float(ledger_df['monetary_impact'].sum()),
-            "issues": ledger_df.to_dict(orient="records")
-        }
+        return get_cached_dq_ledger()
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
