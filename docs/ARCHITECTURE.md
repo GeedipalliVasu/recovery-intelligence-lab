@@ -2,7 +2,7 @@
 
 **System Name**: Recovery Intelligence Platform  
 **Target SLA**: Daily Refresh by 06:00 UTC (Sub-second query response on executive dashboard)  
-**Author**: Lead Analytics Engineer & Full-Stack Architect  
+**Status**: Production Architecture Document  
 
 ---
 

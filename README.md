@@ -5,7 +5,7 @@
 [![DuckDB](https://img.shields.io/badge/DuckDB-2.0-yellow.svg)](https://duckdb.org/)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.115-green.svg)](https://fastapi.tiangolo.com/)
 [![React](https://img.shields.io/badge/React-18-cyan.svg)](https://react.dev/)
-[![Tests](https://img.shields.io/badge/Tests-16%20Passed%20(100%25)-brightgreen.svg)]()
+[![CI](https://github.com/GeedipalliVasu/recovery-intelligence-lab/actions/workflows/ci.yml/badge.svg)](https://github.com/GeedipalliVasu/recovery-intelligence-lab/actions/workflows/ci.yml)
 
 ---
 
@@ -28,44 +28,49 @@ Every deliverable required by the assignment brief has been implemented, validat
 
 | Required Deliverable | Repository Location | Status |
 | :--- | :--- | :--- |
-| **1. SQL Repository** | `sql/01_raw_vs_clean_recovery.sql`<br>`sql/02_daily_run_rate_normalization.sql`<br>`sql/03_risk_segment_performance.sql`<br>`sql/04_data_quality_reconciliation.sql`<br>`sql/05_operational_metrics_challenge.sql`<br>`sql/06_counterfactual_targeting.sql`<br>`sql/07_ten_crore_investment_targeting.sql` | **Complete** (100% Verified in DuckDB) |
-| **2. Analysis Notebook** | `notebooks/recovery_intelligence_investigation.ipynb` | **Complete** (All 15 cells verified) |
+| **1. SQL Repository** | `sql/01_raw_vs_clean_recovery.sql`<br>`sql/02_daily_run_rate_normalization.sql`<br>`sql/03_risk_segment_performance.sql`<br>`sql/04_data_quality_reconciliation.sql`<br>`sql/05_operational_metrics_challenge.sql`<br>`sql/06_counterfactual_targeting.sql`<br>`sql/07_ten_crore_investment_targeting.sql` | **Complete** (Validated in DuckDB) |
+| **2. Analysis Notebook** | `notebooks/recovery_intelligence_investigation.ipynb` | **Complete** (All 15 cells executed) |
 | **3. Golden Dataset / Pipeline** | `scripts/pipeline.py`<br>`data/recovery_intelligence.duckdb` | **Complete** (DuckDB + JSON exports) |
 | **4. Data Quality Report** | `docs/DATA_QUALITY_REPORT.md` | **Complete** (10 audited issues & impact ledger) |
 | **5. Executive Dashboard** | `frontend/` (React + Vite + Recharts)<br>Served on `http://127.0.0.1:8000/` | **Complete** (Interactive 1-screen CEO UI) |
 | **6. Executive Memo** | `reports/EXECUTIVE_MEMO.md` | **Complete** (Max 2 pages, 5 mandated questions, ₹10 Cr decision) |
 | **7. Architecture Diagram** | `docs/ARCHITECTURE.md` | **Complete** (Mermaid production system design) |
 | **8. Metric Definitions** | `docs/METRIC_DEFINITIONS.md` | **Complete** (Challenges 9 operational metrics) |
-| **9. Decision Log** | `docs/DECISION_LOG.md` | **Complete** (Interview defense guide) |
+| **9. Decision Log** | `docs/DECISION_LOG.md` | **Complete** (Architecture Decision Records) |
 
 ---
 
 ## 3. Architecture & Tech Stack
 
-```
-[Raw CSVs: collections_30k_dataset/] (17 relational tables, ~500k rows)
-          │
-          ▼
-[Forensic Ingestion & Validation Pipeline: scripts/pipeline.py]
-  ├── Deduplicate exact & business keys (payment_id, payment_reference)
-  ├── Normalize timezones (UTC, Asia/Kolkata, Asia/Dubai) to UTC standard
-  └── Generate Machine-Readable Data Quality Impact Ledger
-          │
-          ▼
-[DuckDB Golden Storage: data/recovery_intelligence.duckdb]
-  ├── golden_payments (clean settled transactions linked to account risk & DPD)
-  ├── golden_accounts (complete portfolio book preserving orphan foreign keys)
-  └── golden_monthly_metrics (authoritative calendar-normalized timeline)
-          │
-          ▼
-[FastAPI Analytical Engine: backend/]
-  ├── /api/kpi/summary (Executive verdict & Welch's t-test stats)
-  ├── /api/metrics/stress-test (8 analytical scenarios evaluated)
-  ├── /api/metrics/evidence-trace (Full mathematical formula, lineage & SQL audit)
-  └── /api/strategy/sandbox (Portfolio capacity simulation & RCT pilot design)
-          │
-          ▼
-[React + Vite Executive Dashboard: frontend/dist mounted at /]
+```mermaid
+flowchart TD
+    subgraph S1["1. Raw Ingestion Layer"]
+        CSV["collections_30k_dataset/<br/>17 Relational CSVs (~500k rows)"]
+    end
+
+    subgraph S2["2. Forensic ETL Pipeline (scripts/pipeline.py)"]
+        DEDUP["Deduplication Engine<br/>486 duplicate rows & PK collisions"]
+        TIME["Timestamp Normalization<br/>Standardized to UTC"]
+        DQ["Data Quality Impact Ledger<br/>10 audited anomalies logged"]
+    end
+
+    subgraph S3["3. Golden Storage Layer (DuckDB)"]
+        GOLD["data/recovery_intelligence.duckdb<br/>golden_payments | golden_accounts | golden_monthly_metrics"]
+    end
+
+    subgraph S4["4. Analytics Engine (FastAPI)"]
+        API["FastAPI REST Backend<br/>/api/kpi/summary | /api/metrics/stress-test<br/>/api/performance/drivers | /api/strategy/sandbox"]
+    end
+
+    subgraph S5["5. Presentation Layer (React 18 + Recharts)"]
+        UI["Executive Dashboard (Single-Page App)<br/>Claim Stress Test | Drivers & Mix Shift | Strategy Sandbox"]
+    end
+
+    CSV --> DEDUP & TIME
+    DEDUP & TIME --> DQ
+    DEDUP & TIME --> GOLD
+    GOLD --> API
+    API --> UI
 ```
 
 ### Technology Choices & Rationale
@@ -151,6 +156,6 @@ Interactive targeting simulator pairing debt prioritization rules (DPD bands, co
 
 ---
 
-## 6. Submission & Verification
-Prepared as an authoritative submission for the Data Analyst / Analytics Engineer hiring evaluation. All findings, code, SQL scripts, and statistical tests are fully reproducible and verifiable from the source files.
+## 6. Project Evaluation Summary
+Prepared for the Data Analyst / Analytics Engineer hiring evaluation. All findings, code, SQL scripts, and statistical tests are reproducible and verifiable from the source files.
 

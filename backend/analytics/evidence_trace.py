@@ -80,7 +80,7 @@ ORDER BY 1;""",
             "Converted event_at to UTC timestamp standard.",
             "Calendar length divisor: 28 for Feb 2026, 31 for Mar 2026."
         ],
-        "sql_query": """-- Authoritative Calendar-Normalized Run-Rate
+        "sql_query": """-- Calendar-Normalized Daily Run-Rate
 WITH clean_payments AS (
     SELECT 
         year_month,

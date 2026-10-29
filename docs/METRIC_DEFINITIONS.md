@@ -1,14 +1,14 @@
 # METRIC DEFINITIONS & OPERATIONAL METRIC CHALLENGES
 
 **Project**: Recovery Intelligence Lab  
-**Scope**: Definitive Operational Metric Framework  
-**Author**: Lead Analytics Engineer  
+**Scope**: Operational Metric Framework  
+**Status**: Reference Specification  
 
 ---
 
 ## 1. Primary Recovery Metrics Under Investigation
 
-| Metric Code | Metric Name | Existing Naive Definition | Proposed Authoritative Definition | Why the Existing Metric is Flawed |
+| Metric Code | Metric Name | Existing Naive Definition | Proposed Standardized Definition | Why the Existing Metric is Flawed |
 | :--- | :--- | :--- | :--- | :--- |
 | **MTR-01** | **Monthly Recovery Volume** | $\sum \text{Amount}_{\text{SUCCESS}}$ | $\frac{\sum \text{Clean Settled Amount}}{\text{Active Calendar Days}}$ ($/day) | Comparing 28 days (Feb) to 31 days (Mar) introduces an unavoidable 10.71% calendar distortion. |
 | **MTR-02** | **Portfolio Recovery Rate** | $\frac{\text{Monthly Recovery}}{\text{Active Balance}}$ | $\frac{\sum \text{Clean Settled Recovery}}{\sum \text{Total Portfolio Outstanding Balance}}$ | Omits delinquent accounts that drop out of contact lists, causing survivor bias. |

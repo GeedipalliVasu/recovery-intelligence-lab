@@ -52,7 +52,7 @@ export default function Methodology({ onOpenTrace }) {
         <div className="section-header">
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
             <BookOpen size={20} color="var(--accent-teal)" />
-            <h3 className="section-title">Authoritative Metric Definitions</h3>
+            <h3 className="section-title">Standardized Metric Definitions</h3>
           </div>
         </div>
 
