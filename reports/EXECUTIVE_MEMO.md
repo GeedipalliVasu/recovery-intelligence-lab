@@ -1,7 +1,7 @@
 # EXECUTIVE MEMORANDUM
 
 **TO:** Chief Executive Officer & Collections Leadership Committee  
-**FROM:** Senior Analytics Engineer & Lead Data Forensic Auditor  
+**FROM:** Analytics Engineering & Data Forensics Team  
 **DATE:** October 28, 2026  
 **SUBJECT:** Forensic Evaluation of the Reported 11% Month-on-Month Recovery Improvement & ₹10 Cr Capital Allocation Recommendation  
 

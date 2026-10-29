@@ -151,6 +151,6 @@ Interactive targeting simulator pairing debt prioritization rules (DPD bands, co
 
 ---
 
-## 6. Author & Defense
-Prepared as an authoritative submission for the Data Analyst / Analytics Engineer Hiring Assignment. All findings, code, SQL scripts, and statistical tests are reproducible and verifiable from the source files.
+## 6. Submission & Verification
+Prepared as an authoritative submission for the Data Analyst / Analytics Engineer hiring evaluation. All findings, code, SQL scripts, and statistical tests are fully reproducible and verifiable from the source files.
 

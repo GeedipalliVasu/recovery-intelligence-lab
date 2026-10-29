@@ -1,6 +1,5 @@
 """
 Recovery Intelligence Lab - Forensic Data Ingestion, Reconciliation & Golden Pipeline
-Author: Senior Analytics Engineer & Full-Stack Developer
 """
 
 import os

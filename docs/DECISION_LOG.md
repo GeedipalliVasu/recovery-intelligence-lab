@@ -1,52 +1,75 @@
-# DECISION LOG & INTERVIEW DEFENSE GUIDE
+# ARCHITECTURE & ANALYTICAL DECISION RECORDS (ADR)
 
 **Project**: Recovery Intelligence Lab  
-**Author**: Lead Analytics Engineer  
-
-This document logs all critical architecture and analytical decisions made during the forensic investigation, alternative options considered, and the exact evidence-based rationale to defend each choice in an executive interview.
+**Scope**: Core Analytical Metrics, Data Engineering Pipeline & Investment Modeling  
+**Status**: Authoritative Reference  
 
 ---
 
-## 1. Primary Metric Definition: Daily Run-Rate vs. Raw Monthly Volume
+### ADR 01: Calendar-Normalized Daily Settled Run-Rate as Primary Benchmark
 
+* **Status**: Accepted
+* **Context**: Management reported an unadjusted +10.99% month-on-month recovery growth between February 2026 and March 2026. February contains 28 calendar days, while March contains 31 calendar days.
 * **Decision**: Adopt Calendar-Normalized Daily Settled Run-Rate ($\text{Clean Settled Amount} / \text{Days in Month}$) as the primary benchmark metric rather than aggregate monthly totals.
-* **Alternative Considered**: Comparing raw monthly sums or working-day sums.
-* **Rationale**: February has 28 days and March has 31 days. A 3-day difference automatically inflates available operating days by 10.71%. Because digital payments, dialers, and SMS gateways run continuously 7 days a week, calendar day normalization is standard corporate treasury accounting practice.
-* **Interview Defense**: *"If a collections leader claims an 11% improvement from Feb to Mar, asking 'did your daily collection rate change?' immediately uncovers that the gain is an artifact of March having 3 extra calendar days."*
+* **Alternatives Considered**: 
+  * *Raw monthly totals*: Flawed because it conflates operational performance with calendar duration (+10.71% available days).
+  * *Working-day normalization*: Inapplicable because digital payment gateways (UPI, net banking) and automated telephony run 7 days a week.
+* **Consequences & Trade-offs**: 
+  * Normalizing by days reveals the true underlying run-rate moved from ₹6.077 Cr/day to ₹6.094 Cr/day (+0.29%, Welch's t-test $p = 0.932$), disproving the 11% operational improvement claim.
+  * Monthly reporting requires dual-track presentation (nominal total vs daily rate) to prevent leadership misinterpretation.
 
 ---
 
-## 2. Ingestion Deduplication: Dropping 486 Exact Duplicates & PK Collisions
+### ADR 02: Deterministic Deduplication of Exact Rows and Webhook Retries
 
-* **Decision**: Drop 486 exact byte-for-byte duplicate payment rows and resolve duplicate `payment_id`s by prioritizing `SUCCESS` and earliest `event_at`.
-* **Alternative Considered**: Retaining all rows as distinct transactions or averaging them.
-* **Rationale**: Primary keys in financial accounting must be strictly unique. The 486 duplicate rows resulted from webhook delivery retries or multi-partition ingestion overlaps. Retaining them creates phantom revenue of ₹37.3 Cr.
-* **Interview Defense**: *"Counting duplicate webhook records inflates both cashflow and debtor penetration. We isolated exact duplicates and logged their monetary impact in an auditable Data Quality Ledger."*
-
----
-
-## 3. Preservation of Orphan Account Balances in Denominator
-
-* **Decision**: Retain 455 accounts with missing `borrower_id` and 2,913 accounts with orphan borrower foreign keys in the total portfolio denominator ($N = 30,000$).
-* **Alternative Considered**: Performing an `INNER JOIN accounts ON borrowers` to discard orphan records.
-* **Rationale**: Discarding orphan accounts would remove ₹100.65 Cr of debt from the portfolio denominator, artificially inflating portfolio recovery rates from 1.80% to 2.03% (denominator manipulation).
-* **Interview Defense**: *"An unlinked borrower does not make a debt obligation disappear. Discarding them creates artificial survivor bias in conversion metrics."*
+* **Status**: Accepted
+* **Context**: `payments.csv` contains 486 exact byte-for-byte duplicate rows and 1,000 records sharing duplicate `payment_id`s, reflecting webhook retry storms and multi-partition ingestion overlaps.
+* **Decision**: Deduplicate exact rows entirely and resolve primary key collisions by prioritizing `payment_status = 'SUCCESS'` and earliest timestamp (`event_at`).
+* **Alternatives Considered**: 
+  * *Ingest as distinct transactions*: Creates phantom revenue of ₹37.3 Cr and distorts financial reconciliation.
+  * *Arbitrary first-seen deduplication*: Risk of preserving FAILED retry attempts over subsequent SUCCESS settlements.
+* **Consequences & Trade-offs**: 
+  * Prevents revenue overstatement and enforces primary key integrity in `golden_payments`.
+  * All excluded transactions are cataloged in an auditable machine-readable Data Quality Impact Ledger (`dq_impact_ledger`).
 
 ---
 
-## 4. Rejection of Causal Claims from Historical Dialer Contact
+### ADR 03: Preservation of Orphan Accounts in the Portfolio Denominator
 
-* **Decision**: Refuse to attribute payments to historical dialer contacts as 'causal lift'.
-* **Alternative Considered**: Last-touch attribution (crediting the last channel before payment).
-* **Rationale**: Data forensics proved that 94.8% of paying accounts were contacted, but 94.6% of *non-paying* accounts were also contacted. Contact rates were identical across both cohorts. The underlying data generating process reflects a high rate of debtor self-cure.
-* **Interview Defense**: *"Post-hoc ergo propter hoc is the most dangerous trap in collections analytics. Without a randomized holdout, calling everyone and then claiming calls caused recovery is an attribution fallacy."*
+* **Status**: Accepted
+* **Context**: 455 accounts have missing `borrower_id` and 2,913 accounts have orphan borrower foreign keys not present in `borrowers.csv`.
+* **Decision**: Retain all 30,000 accounts (and their associated ₹10,489 Cr balance) in the portfolio recovery denominator, flagging unlinked records with boolean indicators (`is_orphan_borrower = TRUE`).
+* **Alternatives Considered**: 
+  * *Inner join filtering*: Dropping accounts without matching borrower demographic records.
+* **Consequences & Trade-offs**: 
+  * Dropping unlinked accounts would artificially strip ₹100.65 Cr of debt from the portfolio denominator, artificially inflating calculated recovery rates from 1.80% to 2.03% (denominator manipulation).
+  * Demographic analysis on borrower segments must explicitly document the coverage rate (~90.3%).
 
 ---
 
-## 5. The ₹10 Cr Investment Choice: Option 4 (Targeting) with an RCT Guardrail
+### ADR 04: Rejection of Causal Attribution from Historical Contact Logs
 
-* **Decision**: Recommend deploying ₹10 Cr into Option 4 (Better Borrower Targeting & ML Propensity Allocation) with a mandatory 80/20 Randomized Controlled Trial (RCT) holdout.
-* **Alternative Considered**: Buying more telephony dialer trunks or hiring more manual agents.
-* **Rationale**: Dialer connect rates are already flat at ~20% across all 24 hours of the day. Adding more dialer trunks simply rings unanswered numbers faster. Better targeting focuses expensive outreach on the marginal responsiveness band (DPD 15–60) while allowing self-curers to pay organically, generating ₹28.5 Cr incremental recovery at 2.85x ROI.
-* **Interview Defense**: *"Hiring more agents to dial random numbers scales a broken process. Allocating capital to intelligent segmentation and validating lift with a 20% holdout protects capital and guarantees verifiable ROI."*
+* **Status**: Accepted
+* **Context**: 94.8% of paying accounts were contacted via voice dialer, leading operational teams to claim outreach was the primary cause of collections recovery.
+* **Decision**: Reject observational contact logs as proof of causal lift. Document the high prevalence of debtor self-cure and require randomized holdouts for future attribution.
+* **Alternatives Considered**: 
+  * *Last-touch attribution*: Crediting the last channel before payment timestamp.
+* **Consequences & Trade-offs**: 
+  * Cross-cohort audit proved that 94.6% of *non-paying* accounts were also contacted at identical call frequencies. 
+  * Dialing indiscriminately without holdout controls creates post-hoc attribution bias. The analytical engine disclaims causal attribution on observational data.
 
+---
+
+### ADR 05: ₹10 Cr Capital Deployment: ML Borrower Targeting (Option 4) with A/B Holdout
+
+* **Status**: Accepted
+* **Context**: Leadership allocated ₹10 Cr to be deployed into one of six candidate collections initiatives.
+* **Decision**: Allocate ₹10 Cr to Option 4 (Better Borrower Targeting & ML Propensity Allocation Engine) under an orthogonal 80/20 Randomized Controlled Trial (RCT) governance protocol.
+* **Alternatives Considered**: 
+  * *Option 1 (Telephony trunks)*: Connect rates are flat across vendors (~20%); telephony capacity is not the constraint.
+  * *Option 2 (More collection agents)*: High marginal cost per dial with stagnant Right Party Contact (RPC) rates.
+  * *Option 3 (AI voice bots)*: Without targeting intelligence, automated bots scale uncalibrated dialing and drive customer complaints.
+* **Consequences & Trade-offs**: 
+  * Shifts outbound dialer capacity away from chronic non-payers and organic self-curers to the marginal responsiveness band (DPD 15–60).
+  * Projected incremental recovery of ₹28.5 Cr (2.85x ROI, 4.2-month break-even).
+  * Requires maintaining a 20% control holdout group to measure true incremental lift above baseline.

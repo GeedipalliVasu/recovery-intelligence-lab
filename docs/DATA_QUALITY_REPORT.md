@@ -2,7 +2,6 @@
 
 **Project**: Recovery Intelligence Lab  
 **Scope**: 17 Relational Collections Datasets (30,000 Accounts, ~500,000 Event Rows)  
-**Author**: Lead Data Forensic Auditor & Analytics Engineer  
 **Status**: Authoritative Reference  
 
 ---
