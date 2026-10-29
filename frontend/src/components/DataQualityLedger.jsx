@@ -41,7 +41,7 @@ export default function DataQualityLedger({ ledgerData }) {
             <div style={{ background: 'var(--bg-muted)', padding: '0.75rem 1.25rem', borderRadius: 'var(--radius-md)', textAlign: 'center' }}>
               <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>TOTAL MONETARY IMPACT</div>
               <div style={{ fontSize: '1.5rem', fontWeight: 700, color: 'var(--danger-red)' }}>
-                ${(total_financial_impact / 1e6).toFixed(1)}M
+                ₹{(total_financial_impact / 1e7).toFixed(2)} Cr
               </div>
             </div>
           </div>
@@ -104,7 +104,7 @@ export default function DataQualityLedger({ ledgerData }) {
                   </td>
 
                   <td className="tabular-nums" style={{ fontWeight: 600, color: issue.monetary_impact > 0 ? 'var(--danger-red)' : 'var(--text-muted)' }}>
-                    {issue.monetary_impact > 0 ? `$${issue.monetary_impact.toLocaleString(undefined, { maximumFractionDigits: 0 })}` : 'N/A'}
+                    {issue.monetary_impact > 0 ? `₹${issue.monetary_impact.toLocaleString(undefined, { maximumFractionDigits: 0 })}` : 'N/A'}
                   </td>
 
                   <td>

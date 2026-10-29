@@ -28,12 +28,12 @@ export default function ExecutiveOverview({ data, onOpenTrace }) {
 
   const { verdict, kpis, key_findings, timeline } = data;
 
-  // Format monthly timeline for chart
+  // Format monthly timeline for chart (in Cr and Lakhs/day)
   const chartData = timeline.map(item => ({
     month: item.year_month,
-    rawTotal: Math.round(item.raw_success_amount / 1_000_000),
-    cleanTotal: Math.round(item.clean_success_amount / 1_000_000),
-    dailyRate: Math.round(item.daily_run_rate_clean / 1_000_000 * 100) / 100,
+    rawTotal: Math.round((item.raw_success_amount / 1e7) * 100) / 100,
+    cleanTotal: Math.round((item.clean_success_amount / 1e7) * 100) / 100,
+    dailyRate: Math.round((item.daily_run_rate_clean / 1e5) * 100) / 100,
     payingAccounts: item.clean_paying_accounts,
     days: item.days_in_period
   }));
@@ -77,7 +77,7 @@ export default function ExecutiveOverview({ data, onOpenTrace }) {
             <span className="kpi-delta warning">Artifact</span>
           </div>
           <div className="kpi-subtext">
-            Feb: ${(kpis.feb_2026.raw_success_amt / 1e6).toFixed(1)}M → Mar: ${(kpis.mar_2026.raw_success_amt / 1e6).toFixed(1)}M (Unadjusted)
+            Feb: ₹{(kpis.feb_2026.raw_success_amt / 1e7).toFixed(2)} Cr → Mar: ₹{(kpis.mar_2026.raw_success_amt / 1e7).toFixed(2)} Cr (Unadjusted)
           </div>
         </div>
 
@@ -93,7 +93,7 @@ export default function ExecutiveOverview({ data, onOpenTrace }) {
             <span className="kpi-delta neutral">Flat</span>
           </div>
           <div className="kpi-subtext">
-            Feb: ${(kpis.feb_2026.daily_run_rate / 1e6).toFixed(3)}M/day → Mar: ${(kpis.mar_2026.daily_run_rate / 1e6).toFixed(3)}M/day
+            Feb: ₹{(kpis.feb_2026.daily_run_rate / 1e5).toFixed(2)}L/day → Mar: ₹{(kpis.mar_2026.daily_run_rate / 1e5).toFixed(2)}L/day
           </div>
         </div>
 
@@ -153,9 +153,9 @@ export default function ExecutiveOverview({ data, onOpenTrace }) {
             </thead>
             <tbody>
               <tr>
-                <td style={{ fontWeight: 600 }}>Raw Success Dollar Volume</td>
-                <td className="tabular-nums">${kpis.feb_2026.raw_success_amt.toLocaleString(undefined, { maximumFractionDigits: 0 })}</td>
-                <td className="tabular-nums">${kpis.mar_2026.raw_success_amt.toLocaleString(undefined, { maximumFractionDigits: 0 })}</td>
+                <td style={{ fontWeight: 600 }}>Raw Success Rupee Volume</td>
+                <td className="tabular-nums">₹{kpis.feb_2026.raw_success_amt.toLocaleString(undefined, { maximumFractionDigits: 0 })}</td>
+                <td className="tabular-nums">₹{kpis.mar_2026.raw_success_amt.toLocaleString(undefined, { maximumFractionDigits: 0 })}</td>
                 <td className="tabular-nums" style={{ fontWeight: 700, color: 'var(--warning-amber)' }}>
                   +{kpis.management_raw_growth_pct}%
                 </td>
@@ -163,8 +163,8 @@ export default function ExecutiveOverview({ data, onOpenTrace }) {
               </tr>
               <tr>
                 <td style={{ fontWeight: 600 }}>Clean Settled Recovery (Deduped)</td>
-                <td className="tabular-nums">${kpis.feb_2026.clean_success_amt.toLocaleString(undefined, { maximumFractionDigits: 0 })}</td>
-                <td className="tabular-nums">${kpis.mar_2026.clean_success_amt.toLocaleString(undefined, { maximumFractionDigits: 0 })}</td>
+                <td className="tabular-nums">₹{kpis.feb_2026.clean_success_amt.toLocaleString(undefined, { maximumFractionDigits: 0 })}</td>
+                <td className="tabular-nums">₹{kpis.mar_2026.clean_success_amt.toLocaleString(undefined, { maximumFractionDigits: 0 })}</td>
                 <td className="tabular-nums" style={{ fontWeight: 700 }}>
                   +{kpis.clean_growth_pct}%
                 </td>
@@ -172,13 +172,13 @@ export default function ExecutiveOverview({ data, onOpenTrace }) {
               </tr>
               <tr style={{ background: 'var(--accent-teal-light)' }}>
                 <td style={{ fontWeight: 700, color: 'var(--accent-teal)' }}>
-                  Normalized Daily Run-Rate ($/day)
+                  Normalized Daily Run-Rate (₹/day)
                 </td>
                 <td className="tabular-nums" style={{ fontWeight: 600 }}>
-                  ${kpis.feb_2026.daily_run_rate.toLocaleString(undefined, { maximumFractionDigits: 0 })}/day
+                  ₹{kpis.feb_2026.daily_run_rate.toLocaleString(undefined, { maximumFractionDigits: 0 })}/day
                 </td>
                 <td className="tabular-nums" style={{ fontWeight: 600 }}>
-                  ${kpis.mar_2026.daily_run_rate.toLocaleString(undefined, { maximumFractionDigits: 0 })}/day
+                  ₹{kpis.mar_2026.daily_run_rate.toLocaleString(undefined, { maximumFractionDigits: 0 })}/day
                 </td>
                 <td className="tabular-nums" style={{ fontWeight: 700, color: 'var(--accent-teal)' }}>
                   +{kpis.calendar_normalized_growth_pct}%
@@ -217,7 +217,7 @@ export default function ExecutiveOverview({ data, onOpenTrace }) {
               <span>Historical Recovery Run-Rate Trend (Jan - Jul 2026)</span>
             </h3>
             <p className="section-subtitle">
-              Comparing raw monthly volume (bars, in $M) against the normalized daily collection rate (line, in $M/day).
+              Comparing raw monthly volume (bars, in ₹ Cr) against the normalized daily collection rate (line, in ₹ L/day).
             </p>
           </div>
           <button className="btn-trace" onClick={() => onOpenTrace('daily_run_rate')}>
@@ -231,17 +231,17 @@ export default function ExecutiveOverview({ data, onOpenTrace }) {
             <BarChart data={chartData} margin={{ top: 10, right: 30, left: 10, bottom: 20 }}>
               <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
               <XAxis dataKey="month" stroke="#64748b" />
-              <YAxis yAxisId="left" stroke="#64748b" label={{ value: 'Monthly Total ($M)', angle: -90, position: 'insideLeft', fill: '#64748b' }} />
-              <YAxis yAxisId="right" orientation="right" domain={[5, 7]} stroke="#0f766e" label={{ value: 'Daily Run Rate ($M/day)', angle: 90, position: 'insideRight', fill: '#0f766e' }} />
+              <YAxis yAxisId="left" stroke="#64748b" label={{ value: 'Monthly Total (₹ Cr)', angle: -90, position: 'insideLeft', fill: '#64748b' }} />
+              <YAxis yAxisId="right" orientation="right" domain={[50, 70]} stroke="#0f766e" label={{ value: 'Daily Run Rate (₹ L/day)', angle: 90, position: 'insideRight', fill: '#0f766e' }} />
               <Tooltip 
                 formatter={(val, name) => [
-                  name === 'dailyRate' ? `$${val}M/day` : `$${val}M`, 
+                  name === 'dailyRate' ? `₹${val} L/day` : `₹${val} Cr`, 
                   name === 'cleanTotal' ? 'Clean Monthly Total' : 'Daily Run Rate'
                 ]}
               />
               <Legend verticalAlign="top" height={36} />
-              <Bar yAxisId="left" dataKey="cleanTotal" fill="#cbd5e1" name="Clean Monthly Total ($M)" radius={[4, 4, 0, 0]} />
-              <Line yAxisId="right" type="monotone" dataKey="dailyRate" stroke="#0f766e" strokeWidth={3} dot={{ r: 5 }} name="Daily Run Rate ($M/day)" />
+              <Bar yAxisId="left" dataKey="cleanTotal" fill="#cbd5e1" name="Clean Monthly Total (₹ Cr)" radius={[4, 4, 0, 0]} />
+              <Line yAxisId="right" type="monotone" dataKey="dailyRate" stroke="#0f766e" strokeWidth={3} dot={{ r: 5 }} name="Daily Run Rate (₹ L/day)" />
             </BarChart>
           </ResponsiveContainer>
         </div>

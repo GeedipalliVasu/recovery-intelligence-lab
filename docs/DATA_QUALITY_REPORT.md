@@ -2,7 +2,7 @@
 
 **Project**: Recovery Intelligence Lab  
 **Scope**: 17 Relational Collections Datasets (30,000 Accounts, ~500,000 Event Rows)  
-**Status**: Authoritative Reference  
+**Status**: Project Evaluation Reference  
 
 ---
 
@@ -10,7 +10,7 @@
 
 A comprehensive audit of the `collections_30k_dataset` revealed multiple systemic data-quality issues, synthetic corruptions, relational key violations, and temporal inconsistencies. 
 
-If uncorrected, these data quality failures **distort the primary headline recovery metric by up to ₹575.8 Cr** and produce false signals regarding operational productivity.
+If uncorrected, these data quality failures **distort the primary headline recovery metric by up to ₹57.58 Cr** and produce false signals regarding operational productivity.
 
 ```
 +---------------------------------------------------------------------------------------+
@@ -19,7 +19,7 @@ If uncorrected, these data quality failures **distort the primary headline recov
 |   Raw Records          Rejected / Corrected              Golden Analytical Dataset    |
 |   ───────────          ────────────────────              ─────────────────────────    |
 |   payments: 25,500 ──► - 486 exact duplicates       ───► golden_payments: 25,000      |
-|                        - 1,000 PK collision resolved     (17,880 settled SUCCESS)     |
+|                        - 14 PK collision rows dropped    (17,880 settled SUCCESS)     |
 |                        - 7,620 non-settled flagged                                    |
 |                                                                                       |
 |   accounts: 30,000 ──► - 455 missing borrower_id    ───► golden_accounts: 30,000      |
@@ -42,12 +42,12 @@ The table below reflects all 10 documented issues audited in `scripts/pipeline.p
 
 | Issue ID | Category | Table | Affected Rows | Monetary Impact (₹) | Alters 11% Claim? | Treatment & Reconciliation Rule |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| **DQ-PAY-01** | Exact Duplicate Rows | `payments.csv` | 486 | ₹37,29,90,198 | **YES** | Dropped identical duplicate rows created by ingestion/webhook retries. |
-| **DQ-PAY-02** | Primary Key Collisions | `payments.csv` | 28 | ₹2,13,46,489 | **YES** | Deduplicated by `payment_id`, prioritizing `SUCCESS` status, then earliest `event_at`. |
-| **DQ-PAY-03** | Missing References | `payments.csv` | 382 | ₹28,75,67,886 | NO | Imputed synthetic reference `SYNTH_REF_<id>` and flagged `imputed_reference=True`. |
-| **DQ-PAY-04** | Non-Settled Transactions | `payments.csv` | 7,620 | ₹575,77,26,908 | **YES** | Filtered `FAILED`, `PENDING`, `REVERSED` from headline recovery; retained in golden table with `is_settled=False`. |
-| **DQ-ACC-01** | Missing Foreign Key | `accounts.csv` | 455 | ₹15,38,56,547 | NO | Flagged `has_missing_borrower=True`; account balances retained to prevent denominator manipulation. |
-| **DQ-ACC-02** | Orphan Foreign Key | `accounts.csv` | 2,913 | ₹85,27,28,421 | NO | Flagged `is_orphan_borrower=True`; accounts retained in analytical portfolio book. |
+| **DQ-PAY-01** | Exact Duplicate Rows | `payments.csv` | 486 | ₹3,72,99,020 (₹3.73 Cr) | **YES** | Dropped identical duplicate rows created by ingestion/webhook retries. |
+| **DQ-PAY-02** | Primary Key Collisions | `payments.csv` | 14 | ₹10,67,324 (₹0.11 Cr) | **YES** | Resolved 14 colliding pairs (28 rows, 14 dropped) by `payment_id`, prioritizing `SUCCESS` status, then earliest `event_at`. |
+| **DQ-PAY-03** | Missing References | `payments.csv` | 382 | ₹2,87,56,789 (₹2.88 Cr) | NO | Imputed synthetic reference `SYNTH_REF_<id>` and flagged `imputed_reference=True`. |
+| **DQ-PAY-04** | Non-Settled Transactions | `payments.csv` | 7,620 | ₹57,57,72,691 (₹57.58 Cr) | **YES** | Filtered `FAILED`, `PENDING`, `REVERSED` from headline recovery; retained in golden table with `is_settled=False`. |
+| **DQ-ACC-01** | Missing Foreign Key | `accounts.csv` | 455 | ₹1,53,85,655 (₹1.54 Cr) | NO | Flagged `has_missing_borrower=True`; account balances retained to prevent denominator manipulation. |
+| **DQ-ACC-02** | Orphan Foreign Key | `accounts.csv` | 2,913 | ₹8,52,72,842 (₹8.53 Cr) | NO | Flagged `is_orphan_borrower=True`; accounts retained in analytical portfolio book. |
 | **DQ-BOR-01** | Entity Duplication | `borrowers.csv` | 19,585 | ₹0 (Audit) | NO | Deduplicated to unique `borrower_id` using the latest `updated_at` timestamp. |
 | **DQ-DSP-01** | Legacy Code Fragmentation| `call_dispositions.csv` | 14,334 | ₹0 (Operational)| NO | Mapped legacy disposition `PTP` to canonical `PROMISE_TO_PAY`. |
 | **DQ-ASH-01** | Inverted Timestamps | `account_status_history.csv` | 30,191 | ₹0 (Audit) | NO | Flagged `has_inverted_timestamp=True`; used `event_at` rather than `recorded_at` as ground truth. |

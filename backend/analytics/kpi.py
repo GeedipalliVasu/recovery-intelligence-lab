@@ -60,11 +60,13 @@ def get_executive_summary() -> Dict[str, Any]:
             "confidence_level": "High (p = 0.932)",
             "summary": (
                 "Management's claim of an 11.0% MoM recovery improvement from February to March 2026 is mathematically "
-                "real in raw dollar totals ($174.10M to $193.23M, +10.99%), but operationally misleading. "
+                "real in raw unadjusted collections (₹17.41 Cr to ₹19.32 Cr, +10.99%), but operationally misleading. "
                 "March had 31 calendar days compared to February's 28 days (+10.71% more operational days). "
-                "When normalized for daily collection rate, the true performance change was only +0.25% (raw) "
-                "or +0.29% (deduplicated), which is statistically indistinguishable from zero (Welch's t-test p = 0.932). "
-                "Furthermore, injected duplicate payments and non-settled transactions inflated raw figures by over $37M."
+                "When normalized for daily collection run-rate, the performance change was only +0.25% (raw) "
+                "or +0.29% (deduplicated, moving from ₹60.77L/day to ₹60.94L/day). A two-sample Welch's t-test yields "
+                "p = 0.932, failing to reject the null hypothesis of equal daily collections productivity. "
+                "Furthermore, 500 duplicate payment rows (₹3.84 Cr) and 7,620 non-settled payments (₹57.58 Cr) "
+                "inflated unscrubbed reporting."
             )
         },
         "kpis": {
@@ -112,22 +114,22 @@ def get_executive_summary() -> Dict[str, Any]:
             {
                 "id": "KF-01",
                 "title": "Calendar Day Inflation (+10.71%)",
-                "finding": "February has 28 days while March has 31 days. A 3-day difference alone creates a +10.71% baseline increase in monthly aggregate cashflow with zero change in operational productivity."
+                "finding": "February had 28 days while March had 31 days. The 3 additional operational days (+10.71%) account for 97.4% of the claimed ₹1.91 Cr gross volume increase."
             },
             {
                 "id": "KF-02",
                 "title": "True Daily Run-Rate (+0.29%)",
-                "finding": "Clean daily collections moved from $6.077M/day to $6.094M/day (+0.29%). Welch's t-test yields p = 0.932 and bootstrap 95% CI spans [-$370k, +$431k], confirming zero statistically credible improvement."
+                "finding": "Clean daily collections moved from ₹60.77 Lakhs/day to ₹60.94 Lakhs/day (+0.29%). Welch's t-test yields p = 0.932 and bootstrap 95% CI spans [-₹3.65L, +₹4.20L/day], confirming the difference is indistinguishable from random noise."
             },
             {
                 "id": "KF-03",
-                "title": "Data Quality Distortions ($37.3M Duplicates)",
-                "finding": "Raw data contains 486 exact duplicate payment rows ($37.3M) and 7,620 non-settled payments ($575.8M) that if unscrubbed create massive false variance."
+                "title": "Data Quality Distortions (₹3.84 Cr Duplicates)",
+                "finding": "Raw data contains 500 duplicate payment rows (486 exact + 14 PK collisions, worth ₹3.84 Cr) and 7,620 non-settled payments (₹57.58 Cr) that skew unscrubbed reporting."
             },
             {
                 "id": "KF-04",
                 "title": "Zero Mix Shift or Simpson's Paradox",
-                "finding": "Standardizing portfolio risk weights (Kitagawa decomposition) reveals mix shift contributed less than 0.03 percentage points. The recovery rate was uniformly flat across high, medium, and NPA segments."
+                "finding": "Kitagawa mix decomposition proves risk mix shifted by less than 0.03 percentage points. Portfolio risk composition was virtually invariant between months."
             },
             {
                 "id": "KF-05",

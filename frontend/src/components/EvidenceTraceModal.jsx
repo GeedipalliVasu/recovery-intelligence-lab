@@ -36,7 +36,9 @@ export default function EvidenceTraceModal({ traceData, onClose }) {
               <div style={{ fontWeight: 600 }}>{traceData.numerator?.label}</div>
               <div style={{ fontSize: '1.1rem', fontWeight: 700, color: 'var(--text-primary)' }}>
                 {typeof traceData.numerator?.value === 'number' 
-                  ? `$${traceData.numerator.value.toLocaleString()}` 
+                  ? (traceData.numerator?.unit === 'INR (₹)' || traceData.numerator?.unit === '₹' 
+                      ? `₹${traceData.numerator.value.toLocaleString()}` 
+                      : `${traceData.numerator.value.toLocaleString()} ${traceData.numerator.unit || ''}`)
                   : traceData.numerator?.value}
               </div>
             </div>
@@ -45,7 +47,9 @@ export default function EvidenceTraceModal({ traceData, onClose }) {
               <div style={{ fontWeight: 600 }}>{traceData.denominator?.label}</div>
               <div style={{ fontSize: '1.1rem', fontWeight: 700, color: 'var(--text-primary)' }}>
                 {typeof traceData.denominator?.value === 'number' 
-                  ? `$${traceData.denominator.value.toLocaleString()}` 
+                  ? (traceData.denominator?.unit === 'INR (₹)' || traceData.denominator?.unit === '₹' 
+                      ? `₹${traceData.denominator.value.toLocaleString()}` 
+                      : `${traceData.denominator.value.toLocaleString()} ${traceData.denominator.unit || ''}`)
                   : traceData.denominator?.value}
               </div>
             </div>

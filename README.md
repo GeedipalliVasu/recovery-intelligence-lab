@@ -14,11 +14,11 @@
 > **The Question**: Management reports that collections recovery improved by **11% month-on-month** (February to March 2026). Leadership is skeptical. Is this improvement real, correctly calculated, statistically credible, and attributable to better collection performance? Furthermore, where should leadership deploy a **₹10 Cr capital investment**?
 
 ### The Forensic Reality
-1. **The 11% Claim is a Calendar Duration Artifact**: Gross raw collections rose from ₹174.10 Cr (Feb) to ₹193.23 Cr (Mar) — exactly **+10.99%**. However, February had 28 days while March had 31 days (**+10.71% more calendar days**).
-2. **True Daily Productivity is Flat (+0.29%)**: Daily normalized collections moved from ₹6.077 Cr/day to ₹6.094 Cr/day. Welch's two-sample t-test yields $p = 0.9324$ and bootstrap 95% CI spans [-$36.99L, +$43.13L/day]. The change is statistically indistinguishable from zero.
-3. **Data Quality Distortions**: The raw dataset contains **486 duplicate rows** (₹37.3 Cr) and **7,620 non-settled payments** (₹575.8 Cr) that artificially skew unscrubbed reporting.
+1. **The 11% Claim is a Calendar Duration Artifact**: Gross raw collections rose from **₹17.41 Cr** (Feb) to **₹19.32 Cr** (Mar) — exactly **+10.99%** unadjusted nominal growth. However, February had 28 days while March had 31 days (**+10.71% more calendar days**).
+2. **True Daily Productivity is Flat (+0.29%)**: Daily normalized collections moved from **₹60.77 Lakhs/day** to **₹60.94 Lakhs/day**. Welch's two-sample t-test yields $p = 0.9324$ and bootstrap 95% CI spans [-₹3.65L/day, +₹4.20L/day]. The data fails to reject the null hypothesis of equal daily recovery productivity; 97.4% of the nominal growth is explained by the 3 additional operational calendar days in March.
+3. **Data Quality Distortions**: The raw dataset contains **486 exact duplicate rows** (₹3.73 Cr) and **14 primary key collisions** (₹0.11 Cr), totaling **500 duplicate rows dropped** (**₹3.84 Cr**), leaving 25,000 clean records. Additionally, **7,620 non-settled payments** (Failed, Pending, Reversed) total **₹57.58 Cr** that artificially distort unscrubbed reporting.
 4. **The Attribution Fallacy**: While 94.8% of paying accounts were contacted via voice dialer, **94.6% of non-paying accounts were also contacted**. Dialing volume did not drive incremental lift; debtor self-cure explains baseline recovery.
-5. **₹10 Cr Investment Recommendation**: Deploy capital into **Option 4: Better Borrower Targeting & ML Propensity Allocation Engine**, yielding an estimated **₹28.5 Cr incremental recovery (2.85x ROI)** over 12 months, de-risked via an orthogonal 80/20 A/B Randomized Controlled Trial (RCT).
+5. **Traceable ₹10 Cr Investment Recommendation**: Deploy capital into **Option 4: Better Borrower Targeting & ML Propensity Allocation Engine**. Target priority book of **₹380.78 Cr** (10,000 accounts). With a conservative **+35.35% targeting lift** on an **₹80.64 Cr/year annualized baseline** (+0.748 pp of targeted balance), expected incremental recovery is **₹28.50 Cr**, yielding a **2.85x ROI** (**₹18.50 Cr net profit**) and a **4.2-month break-even**, de-risked via an orthogonal 80/20 A/B Randomized Controlled Trial (RCT).
 
 ---
 
@@ -49,7 +49,7 @@ flowchart TD
     end
 
     subgraph S2["2. Forensic ETL Pipeline (scripts/pipeline.py)"]
-        DEDUP["Deduplication Engine<br/>486 duplicate rows & PK collisions"]
+        DEDUP["Deduplication Engine<br/>500 duplicate rows & PK collisions (₹3.84 Cr)"]
         TIME["Timestamp Normalization<br/>Standardized to UTC"]
         DQ["Data Quality Impact Ledger<br/>10 audited anomalies logged"]
     end
@@ -151,8 +151,10 @@ Every core metric in the dashboard features an audit drill-down displaying:
 * Executable DuckDB SQL query
 * Documented assumptions and caveats
 
-### 3. Collection Strategy Sandbox & Causal RCT Protocol
-Interactive targeting simulator pairing debt prioritization rules (DPD bands, collector capacity) with an explicit **A/B Randomized Controlled Trial (RCT) Pilot Design** (80% treatment, 20% holdout, MDE power calculation, and stopping guardrails).
+### 3. Collection Strategy Sandbox & Traceable ₹10 Cr ROI Forecast
+Interactive targeting simulator pairing debt prioritization rules (DPD bands, collector capacity) with:
+* **Traceable Financial Model:** Explicit targeting lift assumptions (+35.35% lift on targeted ₹380.78 Cr book $\rightarrow$ ₹28.50 Cr incremental recovery, 2.85x ROI, 4.2-month break-even).
+* **Causal RCT Protocol:** An explicit **A/B Randomized Controlled Trial (RCT) Pilot Design** (80% treatment, 20% holdout, MDE power calculation, and stopping guardrails).
 
 ---
 

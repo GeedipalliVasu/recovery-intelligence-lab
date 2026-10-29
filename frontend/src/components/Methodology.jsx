@@ -133,7 +133,7 @@ export default function Methodology({ onOpenTrace }) {
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '0.75rem' }}>
                 <div style={{ background: 'var(--bg-muted)', padding: '0.75rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-subtle)' }}>
                   <div style={{ fontWeight: 600, fontSize: '0.8rem', color: 'var(--text-primary)', marginBottom: '0.2rem' }}>Deduplication Engine</div>
-                  <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>Scrubbed 486 exact byte-duplicates ($37.3M) & resolved 1,000 PK collisions.</div>
+                  <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>Scrubbed 486 exact byte-duplicates (₹3.73 Cr) & 14 PK collisions (500 total rows, ₹3.84 Cr).</div>
                 </div>
                 <div style={{ background: 'var(--bg-muted)', padding: '0.75rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-subtle)' }}>
                   <div style={{ fontWeight: 600, fontSize: '0.8rem', color: 'var(--text-primary)', marginBottom: '0.2rem' }}>Timestamp Normalization</div>
@@ -145,7 +145,7 @@ export default function Methodology({ onOpenTrace }) {
                 </div>
                 <div style={{ background: 'var(--bg-muted)', padding: '0.75rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-subtle)' }}>
                   <div style={{ fontWeight: 600, fontSize: '0.8rem', color: 'var(--text-primary)', marginBottom: '0.2rem' }}>Data Quality Impact Ledger</div>
-                  <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>Logged 10 cataloged anomalies ($613M monetary impact) into machine-readable ledger.</div>
+                  <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>Logged 10 cataloged anomalies (₹61.42 Cr monetary impact) into machine-readable ledger.</div>
                 </div>
               </div>
             </div>
@@ -304,7 +304,7 @@ export default function Methodology({ onOpenTrace }) {
           │
           ▼
 [Forensic Ingestion: scripts/pipeline.py]
-  ├── Drop exact duplicate rows (486 rows, $37.3M)
+  ├── Drop duplicate rows (486 exact + 14 PK collisions = 500 rows, ₹3.84 Cr)
   ├── Resolve duplicate payment_id collisions (priority: SUCCESS > earliest event)
   ├── Normalize mixed timezones (UTC, Asia/Kolkata, Asia/Dubai) to UTC standard
   ├── Standardize fragmented disposition codes ('PTP' -> 'PROMISE_TO_PAY')
@@ -385,7 +385,7 @@ export default function Methodology({ onOpenTrace }) {
                 <td style={{ fontFamily: 'monospace', fontSize: '0.825rem' }}>
                   Sum(Clean_Settled_Amount) / Sum(Total_Portfolio_Outstanding_Balance)
                 </td>
-                <td>Active portfolio book ($10.49B)</td>
+                <td>Active portfolio book (₹1,048.90 Cr)</td>
                 <td>
                   <button className="btn-trace" onClick={() => onOpenTrace('portfolio_recovery_rate')}>
                     <Search size={12} /> Trace

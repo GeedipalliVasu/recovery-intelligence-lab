@@ -10,7 +10,7 @@
 
 | Metric Code | Metric Name | Existing Naive Definition | Proposed Standardized Definition | Why the Existing Metric is Flawed |
 | :--- | :--- | :--- | :--- | :--- |
-| **MTR-01** | **Monthly Recovery Volume** | $\sum \text{Amount}_{\text{SUCCESS}}$ | $\frac{\sum \text{Clean Settled Amount}}{\text{Active Calendar Days}}$ ($/day) | Comparing 28 days (Feb) to 31 days (Mar) introduces an unavoidable 10.71% calendar distortion. |
+| **MTR-01** | **Monthly Recovery Volume** | $\sum \text{Amount}_{\text{SUCCESS}}$ | $\frac{\sum \text{Clean Settled Amount}}{\text{Active Calendar Days}}$ (₹/day) | Comparing 28 days (Feb) to 31 days (Mar) introduces an unavoidable 10.71% calendar distortion. |
 | **MTR-02** | **Portfolio Recovery Rate** | $\frac{\text{Monthly Recovery}}{\text{Active Balance}}$ | $\frac{\sum \text{Clean Settled Recovery}}{\sum \text{Total Portfolio Outstanding Balance}}$ | Omits delinquent accounts that drop out of contact lists, causing survivor bias. |
 | **MTR-03** | **Paying Debtor Penetration** | Unique Accounts Paying / Active | $\frac{\text{Distinct Accounts with Settled Payment}}{\text{Total Portfolio Accounts}}$ | Micro-payments and split payments inflate transaction counts without increasing recovered accounts. |
 

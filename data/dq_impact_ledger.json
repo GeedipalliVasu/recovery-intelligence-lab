@@ -47,12 +47,12 @@
     "issue_id":"DQ-PAY-02",
     "category":"Primary Key Collision",
     "table_name":"payments",
-    "affected_rows":28,
-    "monetary_impact":2134648.9199999999,
+    "affected_rows":14,
+    "monetary_impact":1067324.46,
     "changes_headline":true,
     "treatment":"Deduplicated by `payment_id` prioritizing SUCCESS status then earliest event_at.",
     "rationale":"Primary key `payment_id` must uniquely identify an analytical payment event.",
-    "limitation":"If two legitimate transactions shared an ID by collision, only one is counted."
+    "limitation":"14 duplicate rows dropped, reconciling 500 total duplicates dropped across pipeline (486 exact + 14 PK collisions)."
   },
   {
     "issue_id":"DQ-PAY-03",

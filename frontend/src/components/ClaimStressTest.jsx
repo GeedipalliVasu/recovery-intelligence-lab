@@ -105,13 +105,13 @@ export default function ClaimStressTest({ stressTestData, onOpenTrace }) {
 
                     <td className="tabular-nums" style={{ whiteSpace: 'nowrap' }}>
                       {typeof s.feb_value === 'number' && s.feb_value > 1000 
-                        ? `$${s.feb_value.toLocaleString(undefined, { maximumFractionDigits: 0 })}` 
+                        ? `₹${s.feb_value.toLocaleString(undefined, { maximumFractionDigits: 0 })}` 
                         : `${s.feb_value} ${s.unit}`}
                     </td>
 
                     <td className="tabular-nums" style={{ whiteSpace: 'nowrap' }}>
                       {typeof s.mar_value === 'number' && s.mar_value > 1000 
-                        ? `$${s.mar_value.toLocaleString(undefined, { maximumFractionDigits: 0 })}` 
+                        ? `₹${s.mar_value.toLocaleString(undefined, { maximumFractionDigits: 0 })}` 
                         : `${s.mar_value} ${s.unit}`}
                     </td>
 
@@ -175,7 +175,7 @@ export default function ClaimStressTest({ stressTestData, onOpenTrace }) {
               Duplicate Payment Webhook Inflation
             </h4>
             <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>
-              The raw source data contains 486 duplicate rows worth $37.3M. In production, payment gateways often send 
+              The raw source data contains 486 exact duplicate rows plus 14 primary key collisions (500 total duplicate rows worth ₹3.84 Cr / ₹38.4M). In production, payment gateways often send 
               redundant webhook retries or ledger sync duplicates that must be resolved using deterministic primary key ordering.
             </p>
           </div>
@@ -185,7 +185,7 @@ export default function ClaimStressTest({ stressTestData, onOpenTrace }) {
               Outlier Trimming (Whale Payments)
             </h4>
             <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>
-              Trimming the top 1% largest payments (exceeding $148,000) does not change the result: daily growth remains +0.27%, 
+              Trimming the top 1% largest payments (exceeding ₹148,000) does not change the result: daily growth remains +0.27%, 
               confirming that the flat performance was systemic across all account sizes rather than skewed by a few enterprise settlements.
             </p>
           </div>

@@ -116,7 +116,7 @@ export default function App() {
             <strong>Evaluation Period:</strong> Feb 2026 vs Mar 2026
           </span>
           <span>
-            <strong>Dataset:</strong> 30,000 Accounts / $10.49B Book
+            <strong>Dataset:</strong> 30,000 Accounts / ₹1,048.90 Cr Book
           </span>
           <button 
             className="btn-trace" 

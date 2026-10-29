@@ -72,4 +72,7 @@ def test_strategy_sandbox(client):
     assert "historical_observed_outcomes" in data
     assert "causal_disclaimer" in data
     assert "randomized_experiment_protocol" in data
+    assert "capital_investment_forecast" in data
     assert data["workload_and_coverage"]["accounts_targeted"] == 5000
+    assert data["capital_investment_forecast"]["investment_capex_cr"] == 10.0
+    assert data["capital_investment_forecast"]["projected_financial_outcomes"]["expected_roi_ratio"] == 2.85

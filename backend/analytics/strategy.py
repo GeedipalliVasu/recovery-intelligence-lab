@@ -116,12 +116,39 @@ def simulate_strategy(
                 "treatment_arm": "80% of accounts allocated to new active outreach protocol (dialer + WhatsApp follow-up).",
                 "control_arm": "20% Holdout (standard organic billing reminder only, no aggressive dialer outreach)."
             },
-            "primary_outcome": "30-day cumulative cash collected per $1,000 outstanding balance (Continuous metric).",
+            "primary_outcome": "30-day cumulative cash collected per ₹1,000 outstanding balance (Continuous metric).",
             "secondary_outcomes": ["Promise-to-pay keep rate", "Debtor dispute / complaint escalation rate", "Cost-to-collect"],
             "statistical_power": "n = 10,000 accounts achieves 80% power at alpha = 0.05 to detect a 0.25 percentage-point incremental lift (MDE).",
             "guardrails_and_stopping_rules": [
                 "Stop trial immediately if complaint escalation in treatment arm exceeds 2.5x control.",
                 "Minimum observation window: 30 full calendar days (do not evaluate on partial weeks)."
             ]
+        },
+        "capital_investment_forecast": {
+            "investment_capex_cr": 10.0,
+            "targeted_accounts": accounts_reached,
+            "targeted_balance_cr": round(balance_targeted / 1e7, 2),
+            "historical_monthly_recovery_cr": round(recovered_targeted / 1e7, 2),
+            "annualized_baseline_recovery_cr": round((recovered_targeted * 12) / 1e7, 2),
+            "explicit_assumptions": {
+                "targeting_efficiency_lift_pct": 35.35,
+                "incremental_recovery_rate_pp": 0.748,
+                "monthly_incremental_cashflow_cr": 2.375,
+                "cost_breakdown": {
+                    "ml_propensity_feature_store_cr": 3.5,
+                    "dialer_crm_decision_engine_cr": 3.0,
+                    "rct_experimentation_platform_cr": 1.5,
+                    "data_engineering_governance_cr": 2.0
+                }
+            },
+            "projected_financial_outcomes": {
+                "expected_incremental_recovery_cr": 28.50,
+                "net_profit_cr": 18.50,
+                "expected_roi_ratio": 2.85,
+                "break_even_months": 4.21,
+                "downside_scenario_lift_pct": 13.0,
+                "downside_recovery_cr": 10.48,
+                "downside_break_even_months": 11.4
+            }
         }
     }

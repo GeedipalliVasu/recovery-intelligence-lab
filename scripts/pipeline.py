@@ -40,7 +40,7 @@ class ForensicPipeline:
             "limitation": limitation
         }
         self.dq_ledger.append(record)
-        logging.info(f"DQ Issue Logged [{issue_id}]: {category} in {table_name} ({affected_rows:,} rows, ${monetary_impact:,.2f})")
+        logging.info(f"DQ Issue Logged [{issue_id}]: {category} in {table_name} ({affected_rows:,} rows, INR {monetary_impact:,.2f})")
 
     def run(self):
         logging.info("Starting Forensic Pipeline...")
@@ -141,20 +141,20 @@ class ForensicPipeline:
         
         # Issue 3.2: Duplicate payment_id with diverging content
         payments_no_exact = payments_raw.drop_duplicates()
-        pid_dup_mask = payments_no_exact.duplicated(subset=['payment_id'], keep=False)
-        pid_dup_cnt = pid_dup_mask.sum()
-        pid_dup_amt = payments_no_exact.loc[pid_dup_mask, 'amount'].sum()
+        pid_dropped_mask = payments_no_exact.duplicated(subset=['payment_id'], keep='first')
+        pid_dropped_cnt = int(pid_dropped_mask.sum())
+        pid_dropped_amt = float(payments_no_exact.loc[pid_dropped_mask, 'amount'].sum())
         
         self.log_dq_issue(
             issue_id="DQ-PAY-02",
             category="Primary Key Collision",
             table_name="payments",
-            affected_rows=pid_dup_cnt,
-            monetary_impact=pid_dup_amt,
+            affected_rows=pid_dropped_cnt,
+            monetary_impact=pid_dropped_amt,
             changes_headline=True,
             treatment="Deduplicated by `payment_id` prioritizing SUCCESS status then earliest event_at.",
             rationale="Primary key `payment_id` must uniquely identify an analytical payment event.",
-            limitation="If two legitimate transactions shared an ID by collision, only one is counted."
+            limitation="14 duplicate rows dropped, reconciling 500 total duplicates dropped across pipeline (486 exact + 14 PK collisions)."
         )
         
         # Issue 3.3: Missing payment_reference

@@ -22,8 +22,8 @@ export default function PerformanceDrivers({ driversData }) {
 
   const loanChartData = by_loan_type.map(l => ({
     name: l.loan_type,
-    Feb: Math.round(l.feb_total / 1_000_000),
-    Mar: Math.round(l.mar_total / 1_000_000)
+    Feb: Math.round((l.feb_total / 1e7) * 100) / 100,
+    Mar: Math.round((l.mar_total / 1e7) * 100) / 100
   }));
 
   return (
@@ -67,7 +67,7 @@ export default function PerformanceDrivers({ driversData }) {
                 <Layers size={18} color="var(--accent-teal)" />
                 <span>Performance by Risk Segment</span>
               </h3>
-              <p className="section-subtitle">Daily normalized collections ($k/day) across risk tiers.</p>
+              <p className="section-subtitle">Daily normalized collections (₹k/day) across risk tiers.</p>
             </div>
           </div>
 
@@ -76,11 +76,11 @@ export default function PerformanceDrivers({ driversData }) {
               <BarChart data={riskChartData}>
                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
                 <XAxis dataKey="name" stroke="#64748b" />
-                <YAxis stroke="#64748b" label={{ value: '$k/day', angle: -90, position: 'insideLeft', fill: '#64748b' }} />
-                <Tooltip formatter={(v) => `$${v.toLocaleString()}k/day`} />
+                <YAxis stroke="#64748b" label={{ value: '₹k/day', angle: -90, position: 'insideLeft', fill: '#64748b' }} />
+                <Tooltip formatter={(v) => `₹${v.toLocaleString()}k/day`} />
                 <Legend />
-                <Bar dataKey="FebDaily" name="Feb ($k/day)" fill="#cbd5e1" radius={[4, 4, 0, 0]} />
-                <Bar dataKey="MarDaily" name="Mar ($k/day)" fill="#0f766e" radius={[4, 4, 0, 0]} />
+                <Bar dataKey="FebDaily" name="Feb (₹k/day)" fill="#cbd5e1" radius={[4, 4, 0, 0]} />
+                <Bar dataKey="MarDaily" name="Mar (₹k/day)" fill="#0f766e" radius={[4, 4, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
           </div>
@@ -100,8 +100,8 @@ export default function PerformanceDrivers({ driversData }) {
                 {by_risk_segment.map(r => (
                   <tr key={r.segment}>
                     <td style={{ fontWeight: 600 }}>{r.segment}</td>
-                    <td className="tabular-nums">${r.feb_daily_rate.toLocaleString(undefined, { maximumFractionDigits: 0 })}/d</td>
-                    <td className="tabular-nums">${r.mar_daily_rate.toLocaleString(undefined, { maximumFractionDigits: 0 })}/d</td>
+                    <td className="tabular-nums">₹{r.feb_daily_rate.toLocaleString(undefined, { maximumFractionDigits: 0 })}/d</td>
+                    <td className="tabular-nums">₹{r.mar_daily_rate.toLocaleString(undefined, { maximumFractionDigits: 0 })}/d</td>
                     <td className="tabular-nums" style={{ fontWeight: 700, color: 'var(--accent-teal)' }}>
                       {r.daily_growth_pct > 0 ? `+${r.daily_growth_pct}%` : `${r.daily_growth_pct}%`}
                     </td>
@@ -123,7 +123,7 @@ export default function PerformanceDrivers({ driversData }) {
                 <BarChart2 size={18} color="var(--accent-teal)" />
                 <span>Performance by Loan Type</span>
               </h3>
-              <p className="section-subtitle">Monthly clean volumes ($M) by product category.</p>
+              <p className="section-subtitle">Monthly clean volumes (₹ Cr) by product category.</p>
             </div>
           </div>
 
@@ -132,11 +132,11 @@ export default function PerformanceDrivers({ driversData }) {
               <BarChart data={loanChartData}>
                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
                 <XAxis dataKey="name" stroke="#64748b" />
-                <YAxis stroke="#64748b" label={{ value: '$M Total', angle: -90, position: 'insideLeft', fill: '#64748b' }} />
-                <Tooltip formatter={(v) => `$${v}M`} />
+                <YAxis stroke="#64748b" label={{ value: '₹ Cr Total', angle: -90, position: 'insideLeft', fill: '#64748b' }} />
+                <Tooltip formatter={(v) => `₹${v} Cr`} />
                 <Legend />
-                <Bar dataKey="Feb" name="Feb Total ($M)" fill="#cbd5e1" radius={[4, 4, 0, 0]} />
-                <Bar dataKey="Mar" name="Mar Total ($M)" fill="#0f766e" radius={[4, 4, 0, 0]} />
+                <Bar dataKey="Feb" name="Feb Total (₹ Cr)" fill="#cbd5e1" radius={[4, 4, 0, 0]} />
+                <Bar dataKey="Mar" name="Mar Total (₹ Cr)" fill="#0f766e" radius={[4, 4, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
           </div>
@@ -156,8 +156,8 @@ export default function PerformanceDrivers({ driversData }) {
                 {by_loan_type.map(l => (
                   <tr key={l.loan_type}>
                     <td style={{ fontWeight: 600 }}>{l.loan_type}</td>
-                    <td className="tabular-nums">${(l.feb_total / 1e6).toFixed(2)}M</td>
-                    <td className="tabular-nums">${(l.mar_total / 1e6).toFixed(2)}M</td>
+                    <td className="tabular-nums">₹{(l.feb_total / 1e7).toFixed(2)} Cr</td>
+                    <td className="tabular-nums">₹{(l.mar_total / 1e7).toFixed(2)} Cr</td>
                     <td className="tabular-nums" style={{ fontWeight: 700, color: 'var(--accent-teal)' }}>
                       {l.daily_growth_pct > 0 ? `+${l.daily_growth_pct}%` : `${l.daily_growth_pct}%`}
                     </td>
@@ -196,8 +196,8 @@ export default function PerformanceDrivers({ driversData }) {
                 {by_dpd_bucket.map(d => (
                   <tr key={d.dpd_bucket}>
                     <td style={{ fontWeight: 600 }}>{d.dpd_bucket}</td>
-                    <td className="tabular-nums">${(d.feb_total / 1e6).toFixed(2)}M</td>
-                    <td className="tabular-nums">${(d.mar_total / 1e6).toFixed(2)}M</td>
+                    <td className="tabular-nums">₹{(d.feb_total / 1e7).toFixed(2)} Cr</td>
+                    <td className="tabular-nums">₹{(d.mar_total / 1e7).toFixed(2)} Cr</td>
                     <td className="tabular-nums" style={{ fontWeight: 700, color: 'var(--accent-teal)' }}>
                       {d.daily_growth_pct > 0 ? `+${d.daily_growth_pct}%` : `${d.daily_growth_pct}%`}
                     </td>
@@ -227,7 +227,7 @@ export default function PerformanceDrivers({ driversData }) {
                 <tr>
                   <th>Payment Decile</th>
                   <th>Tx Count</th>
-                  <th>Decile Total ($M)</th>
+                  <th>Decile Total (₹ Cr)</th>
                   <th>Share of Monthly Recovery</th>
                 </tr>
               </thead>
@@ -236,7 +236,7 @@ export default function PerformanceDrivers({ driversData }) {
                   <tr key={dec.decile}>
                     <td style={{ fontWeight: 600 }}>Decile {dec.decile} (Top {dec.decile * 10}%)</td>
                     <td className="tabular-nums">{dec.tx_count.toLocaleString()}</td>
-                    <td className="tabular-nums">${(dec.decile_total / 1e6).toFixed(2)}M</td>
+                    <td className="tabular-nums">₹{(dec.decile_total / 1e7).toFixed(2)} Cr</td>
                     <td className="tabular-nums" style={{ fontWeight: 600, color: 'var(--accent-teal)' }}>
                       {dec.pct_of_recovery.toFixed(2)}%
                     </td>

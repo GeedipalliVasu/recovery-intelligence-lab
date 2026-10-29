@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Target, AlertTriangle, Play, RefreshCw, FlaskConical, ShieldCheck, CheckCircle2 } from 'lucide-react';
+import { Target, AlertTriangle, Play, RefreshCw, FlaskConical, ShieldCheck, CheckCircle2, Calculator } from 'lucide-react';
 
 export default function StrategySandbox() {
   const [priorityRule, setPriorityRule] = useState('HIGH_BALANCE_EARLY_DPD');
@@ -146,7 +146,7 @@ export default function StrategySandbox() {
                 <div className="kpi-label">Targeted Outstanding Balance</div>
                 <div className="kpi-value-row">
                   <div className="kpi-value">
-                    ${(simResult.workload_and_coverage.outstanding_balance_targeted / 1e6).toFixed(1)}M
+                    ₹{(simResult.workload_and_coverage.outstanding_balance_targeted / 1e7).toFixed(2)} Cr
                   </div>
                 </div>
                 <div className="kpi-subtext">
@@ -158,7 +158,7 @@ export default function StrategySandbox() {
                 <div className="kpi-label">Historical Observed Recovery</div>
                 <div className="kpi-value-row">
                   <div className="kpi-value" style={{ color: 'var(--accent-teal)' }}>
-                    ${(simResult.historical_observed_outcomes.historical_settled_recovery / 1e6).toFixed(1)}M
+                    ₹{(simResult.historical_observed_outcomes.historical_settled_recovery / 1e7).toFixed(2)} Cr
                   </div>
                 </div>
                 <div className="kpi-subtext">
@@ -191,6 +191,118 @@ export default function StrategySandbox() {
                 {simResult.causal_disclaimer.message}
               </p>
             </div>
+
+            {/* Traceable ₹10 Cr Capital Investment & ROI Forecast */}
+            {simResult.capital_investment_forecast && (
+              <div className="section-card" style={{ borderLeft: '4px solid #059669', marginBottom: '1.25rem' }}>
+                <div className="section-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '0.75rem' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                    <Calculator size={20} color="#059669" />
+                    <div>
+                      <h3 className="section-title">₹10.00 Cr Capital Allocation & ROI Traceability Forecast</h3>
+                      <p className="section-subtitle">Financial forecast traceable to explicit targeting efficiency assumptions on the audited book.</p>
+                    </div>
+                  </div>
+                  <span className="badge-defensible" style={{ background: '#d1fae5', color: '#065f46', fontWeight: 600 }}>
+                    2.85x ROI Multiple | 4.2 Mo Payback
+                  </span>
+                </div>
+
+                {/* 4 Summary Metric Cards */}
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(210px, 1fr))', gap: '0.75rem', marginTop: '1rem' }}>
+                  <div style={{ background: 'var(--bg-muted)', padding: '0.85rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-subtle)' }}>
+                    <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', fontWeight: 600 }}>CAPITAL EXPENDITURE</div>
+                    <div style={{ fontSize: '1.25rem', fontWeight: 700, color: 'var(--text-primary)', marginTop: '0.2rem' }}>
+                      ₹{simResult.capital_investment_forecast.investment_capex_cr.toFixed(2)} Cr
+                    </div>
+                    <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', marginTop: '0.2rem' }}>
+                      Engineering & ML infra deployment
+                    </div>
+                  </div>
+
+                  <div style={{ background: 'var(--bg-muted)', padding: '0.85rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-subtle)' }}>
+                    <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', fontWeight: 600 }}>TARGETED PRIORITY BOOK</div>
+                    <div style={{ fontSize: '1.25rem', fontWeight: 700, color: 'var(--text-primary)', marginTop: '0.2rem' }}>
+                      ₹{simResult.capital_investment_forecast.targeted_balance_cr.toFixed(2)} Cr
+                    </div>
+                    <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', marginTop: '0.2rem' }}>
+                      {simResult.capital_investment_forecast.targeted_accounts.toLocaleString()} delinquent accounts
+                    </div>
+                  </div>
+
+                  <div style={{ background: 'var(--bg-muted)', padding: '0.85rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-subtle)' }}>
+                    <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', fontWeight: 600 }}>ANNUALIZED BASELINE</div>
+                    <div style={{ fontSize: '1.25rem', fontWeight: 700, color: 'var(--text-secondary)', marginTop: '0.2rem' }}>
+                      ₹{simResult.capital_investment_forecast.annualized_baseline_recovery_cr.toFixed(2)} Cr/yr
+                    </div>
+                    <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', marginTop: '0.2rem' }}>
+                      Observed historical recovery (₹{simResult.capital_investment_forecast.historical_monthly_recovery_cr.toFixed(2)} Cr/mo)
+                    </div>
+                  </div>
+
+                  <div style={{ background: '#ecfdf5', padding: '0.85rem', borderRadius: 'var(--radius-sm)', border: '1px solid #a7f3d0' }}>
+                    <div style={{ fontSize: '0.72rem', color: '#065f46', fontWeight: 600 }}>EXPECTED INCREMENTAL RECOVERY</div>
+                    <div style={{ fontSize: '1.25rem', fontWeight: 700, color: '#059669', marginTop: '0.2rem' }}>
+                      +₹{simResult.capital_investment_forecast.projected_financial_outcomes.expected_incremental_recovery_cr.toFixed(2)} Cr
+                    </div>
+                    <div style={{ fontSize: '0.72rem', color: '#047857', marginTop: '0.2rem' }}>
+                      Net Profit: ₹{simResult.capital_investment_forecast.projected_financial_outcomes.net_profit_cr.toFixed(2)} Cr (after ₹10 Cr CapEx)
+                    </div>
+                  </div>
+                </div>
+
+                {/* Traceable Steps & Cost Allocation */}
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '1rem', marginTop: '1rem' }}>
+                  <div style={{ background: 'var(--bg-card)', padding: '1rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-subtle)' }}>
+                    <h4 style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--text-primary)', marginBottom: '0.5rem' }}>
+                      Explicit Targeting Lift Assumptions
+                    </h4>
+                    <ul style={{ paddingLeft: '1.2rem', fontSize: '0.8rem', color: 'var(--text-secondary)', lineHeight: 1.6 }}>
+                      <li>
+                        <strong>Targeting Efficiency Lift:</strong> +{simResult.capital_investment_forecast.explicit_assumptions.targeting_efficiency_lift_pct}% (+{simResult.capital_investment_forecast.explicit_assumptions.incremental_recovery_rate_pp} pp of targeted book).
+                      </li>
+                      <li>
+                        <strong>Incremental Cashflow:</strong> ₹{simResult.capital_investment_forecast.explicit_assumptions.monthly_incremental_cashflow_cr.toFixed(3)} Cr/month.
+                      </li>
+                      <li>
+                        <strong>Capital Payback Period:</strong> ₹10.00 Cr / ₹2.375 Cr/mo = <strong>{simResult.capital_investment_forecast.projected_financial_outcomes.break_even_months} Months</strong>.
+                      </li>
+                      <li>
+                        <strong>Downside Protection (+13.0% lift):</strong> Recovers ₹{simResult.capital_investment_forecast.projected_financial_outcomes.downside_recovery_cr.toFixed(2)} Cr, breaking even at {simResult.capital_investment_forecast.projected_financial_outcomes.downside_break_even_months} months with 1.05x ROI.
+                      </li>
+                    </ul>
+                  </div>
+
+                  <div style={{ background: 'var(--bg-card)', padding: '1rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-subtle)' }}>
+                    <h4 style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--text-primary)', marginBottom: '0.5rem' }}>
+                      ₹10.00 Cr Capital Expenditure (CapEx) Allocation
+                    </h4>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem', fontSize: '0.8rem' }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', padding: '4px 0', borderBottom: '1px solid var(--border-subtle)' }}>
+                        <span style={{ color: 'var(--text-secondary)' }}>ML Propensity & Feature Store</span>
+                        <span style={{ fontWeight: 600 }}>₹{simResult.capital_investment_forecast.explicit_assumptions.cost_breakdown.ml_propensity_feature_store_cr.toFixed(1)} Cr (35%)</span>
+                      </div>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', padding: '4px 0', borderBottom: '1px solid var(--border-subtle)' }}>
+                        <span style={{ color: 'var(--text-secondary)' }}>Dialer CRM & Real-Time Decision Engine</span>
+                        <span style={{ fontWeight: 600 }}>₹{simResult.capital_investment_forecast.explicit_assumptions.cost_breakdown.dialer_crm_decision_engine_cr.toFixed(1)} Cr (30%)</span>
+                      </div>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', padding: '4px 0', borderBottom: '1px solid var(--border-subtle)' }}>
+                        <span style={{ color: 'var(--text-secondary)' }}>Data Engineering & Ingestion Governance</span>
+                        <span style={{ fontWeight: 600 }}>₹{simResult.capital_investment_forecast.explicit_assumptions.cost_breakdown.data_engineering_governance_cr.toFixed(1)} Cr (20%)</span>
+                      </div>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', padding: '4px 0', borderBottom: '1px solid var(--border-subtle)' }}>
+                        <span style={{ color: 'var(--text-secondary)' }}>RCT Experimentation & Audit Platform</span>
+                        <span style={{ fontWeight: 600 }}>₹{simResult.capital_investment_forecast.explicit_assumptions.cost_breakdown.rct_experimentation_platform_cr.toFixed(1)} Cr (15%)</span>
+                      </div>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', padding: '4px 0', fontWeight: 700, color: 'var(--accent-teal)' }}>
+                        <span>Total Capital Commitment</span>
+                        <span>₹10.00 Cr (100%)</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
 
             {/* Randomized Control Trial (RCT) Experiment Design */}
             <div className="section-card" style={{ background: 'var(--bg-muted)' }}>
